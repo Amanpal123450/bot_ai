@@ -4,9 +4,9 @@
   "description": "Kikoo FAQ chatbot using RAG (Retrieval-Augmented Generation)",
   "main": "server.js",
   "scripts": {
-    "ingest": "node rag/ingest.js",
-    "start": "node server.js"
-  },
+  "ingest": "node rag/ingest.js",
+  "start": "node server.js"
+},
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
     "cors": "^2.8.5",
