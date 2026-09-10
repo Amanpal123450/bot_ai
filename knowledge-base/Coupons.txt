@@ -1,0 +1,13 @@
+Coupons FAQs
+
+Q: How do I redeem a coupon code?
+A: Enter your code at checkout on the vote-purchase screen. Valid codes apply instantly to your order.
+
+Q: Why did my coupon fail to redeem?
+A: The most common reasons are: the code has expired, it's already been used, it belongs to a different account, or it's not valid for the contest/category you're voting in.
+
+Q: Can I use a coupon more than once?
+A: Only if it's explicitly issued as a multi-use or partial-use code. Standard single-use coupons are locked after first redemption.
+
+Q: Can an admin cancel my coupon after I've used it?
+A: Coupons can be revoked by an admin in cases of error or abuse. Any such action is logged, and affected users are notified.

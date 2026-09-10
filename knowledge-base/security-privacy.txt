@@ -1,0 +1,85 @@
+KIKOO PRIVACY POLICY
+
+
+Q: What information does Kikoo collect about my baby?
+A: Kikoo collects the baby's name, age, and photo when submitted by a parent or legal guardian for participation in the baby photo contest.
+
+Q: What information does Kikoo collect from parents or guardians?
+A: Kikoo collects the parent or guardian's email address, phone number, and account credentials.
+
+Q: Does Kikoo collect voting or device information?
+A: Yes. Kikoo collects information such as IP address, device type, operating system, and browser fingerprint to help prevent voting fraud.
+
+HOW WE USE INFORMATION
+
+Q: Why does Kikoo collect my information?
+A: Kikoo uses information to administer and manage the baby photo contest, display baby entries, verify voter authenticity, prevent bot voting, track voting logs, contact winners, and distribute prizes.
+
+Q: Why is my baby's photo displayed publicly?
+A: Baby entries may be displayed publicly on Kikoo's website and official social media platforms for voting, contest administration, promotion, and transparency.
+
+DATA PROTECTION
+
+Q: How does Kikoo protect my personal data?
+A: Kikoo states that participant data is stored securely and protected using security measures including SSL encryption for form submissions and image uploads.
+
+Q: Who can access participant data?
+A: Access to backend participant data is restricted to authorized Kikoo personnel.
+
+Q: Does Kikoo use encryption?
+A: Yes. Kikoo uses SSL encryption for form submissions and image uploads.
+
+SHARING OF INFORMATION
+
+Q: Does Kikoo sell or rent participant data?
+A: No. Kikoo does not sell, rent, or trade participant data to third-party marketing companies.
+
+Q: Where are baby photos displayed?
+A: Photos may be displayed publicly on Kikoo platforms for voting and contest transparency.
+
+Q: Are winners' details published?
+A: Yes. Winners' names, photos, and contest ranks may be published for public audits and transparency.
+
+PARENTAL RIGHTS
+
+Q: Can I request removal of my child's photo?
+A: Yes. Parents and legal guardians may request removal of their child's photo and contest entry at any time.
+
+Q: Can I request deletion of my child's personal data?
+A: Yes. Parents may request permanent deletion of their child's personal data after the contest ends.
+
+Q: How do I request deletion of my data?
+A: Contact Kikoo through the designated email channel to submit a data deletion request.
+
+Q: How long does Kikoo take to process a deletion request?
+A: Kikoo states that deletion requests will be responded to and processed within 7 working days.
+
+COOKIES & TRACKING
+
+Q: Does Kikoo use cookies?
+A: Yes. Kikoo uses cookies and session tracking for functional and security purposes.
+
+Q: Why does Kikoo use cookies?
+A: Cookies help optimize website load speeds and maintain user sessions.
+
+Q: Does Kikoo track voting sessions?
+A: Yes. Kikoo tracks specific session information to help identify and block fraudulent or bot-driven voting.
+
+Q: What happens if I disable cookies?
+A: You can disable cookies in your browser settings, but some Kikoo contest voting features may not function correctly.
+
+RETENTION & DELETION
+
+Q: How long does Kikoo keep contest data?
+A: Contest entries and voting logs are retained during the active contest and winner verification phases.
+
+Q: When is personal data deleted?
+A: Kikoo states that within 90 days after the contest concludes and prizes are distributed, personal data, including uploaded baby photos, will be securely deleted from its databases.
+
+LEGAL COMPLIANCE
+
+Q: Which laws govern Kikoo's Privacy Policy?
+A: Kikoo's Privacy Policy is governed by the laws of India, including the Information Technology Act, 2000 and the Digital Personal Data Protection Act, 2023, as stated in the policy.
+
+Q: Which courts have jurisdiction over privacy disputes?
+A: Legal disputes or compliance challenges relating to the Privacy Policy are subject to the exclusive jurisdiction of the courts in Delhi, India.

@@ -1,0 +1,16 @@
+Contests FAQs
+
+Q: How does a Kikoo contest work?
+A: Register your child in an age/gender category, collect votes (free and purchased) during the voting window, and the top-ranked entries at close win prizes for that category.
+
+Q: What if a category fills up?
+A: Each category has a maximum participant slot cap. Once it's reached, new registrations for that category close automatically, and the site shows how many slots remain while it's open.
+
+Q: Can a previous winner enter again?
+A: A 1st-place winner sits out the same category for a cooldown period (default 30 days) before re-entering. Winning 1st place repeatedly across categories may also trigger an admin review of continued participation.
+
+Q: How and when are results published?
+A: Results are calculated by the backend once the contest closes and voting is locked. Winners are typically notified by email and in-app within 96 hours of contest end.
+
+Q: What happens with tied ranks or disqualified entries?
+A: Ties and disqualifications are resolved before final results are published; provisional results may be shown first, followed by a final, locked leaderboard.

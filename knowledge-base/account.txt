@@ -1,0 +1,19 @@
+ACCOUNT FAQs
+
+Q: How do I create a Kikoo account?
+A: Sign up with your mobile number or email and verify with a one-time password (OTP). You can also sign in with Google or Facebook. Registration is free and takes under a minute.
+
+Q: Who can register on Kikoo?
+A: You must be 18 or older to create an account, or have a parent/guardian's written consent if you're registering on their behalf. We confirm age using Aadhaar-based verification at the prize-claim stage, not at sign-up.
+
+Q: Can I change my registered mobile number or email?
+A: Yes, from your Account Settings page. You'll need to verify the new number/email with an OTP before the change takes effect.
+
+Q: How do I delete my account?
+A: You can request account deletion from Account Settings. Note that deleting your account forfeits any in-progress contest entries, vote balances, and pending claims — these cannot be recovered or refunded.
+
+Q: I forgot my password / can't log in with OTP.
+A: Use “Forgot password” on the login screen, or request a fresh OTP if the previous one expired. If you still can't get in, contact support with your registered mobile number or email.
+
+Q: Can I have more than one account?
+A: No. One account per person. Multiple accounts from the same person, device, or household are treated as a fraud signal and may be flagged, merged, or suspended.

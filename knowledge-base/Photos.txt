@@ -1,0 +1,16 @@
+Photos FAQs 
+
+Q: What are the photo requirements?
+A: Clear, recent, unedited photos of your own child, with no visible contact details, watermarks, or third-party branding. Group photos should let the entered child be clearly identified.
+
+Q: How many photos can I upload per child?
+A: You can build a gallery of multiple photos per child profile. One must be set as the Primary Photo — it's used as the contest thumbnail, vote-page hero image, and leaderboard card.
+
+Q: Can I reorder or change my photos?
+A: Yes, drag-and-drop reordering is supported from your dashboard, and you can change the primary photo at any time.
+
+Q: Why was my photo rejected during moderation?
+A: Common reasons: inappropriate or unclear image, visible watermark or contact info, image of a child who isn't the registered participant, or low resolution. You'll be notified with the specific reason.
+
+Q: Do you own the rights to photos I upload?
+A: No. You retain ownership of your photos. By uploading, you grant Kikoo a license to display the photo on the platform (contest pages, leaderboards, marketing) for the purposes of running the contest — see our Terms & Conditions for full detail.

@@ -1,0 +1,14 @@
+Security & Privacy FAQs
+
+
+Q: Is my Aadhaar or payment information safe?
+A: Yes. We never store your full Aadhaar number or raw payment card data in our systems or logs. Document verification uses secure, time-limited signed URLs, and payments are processed entirely by licensed gateways (Razorpay, Cashfree) — Kikoo never sees your card details.
+
+Q: What happens if I notice suspicious activity on my account?
+A: Contact support immediately. We actively monitor for duplicate devices, unusual voting speed, repeated failed payments, and other fraud signals, and can freeze an account pending review.
+
+Q: Does Kikoo sell or share my data?
+A: We only use your data to run the contest, communicate with you, and process payments/prizes, as described in our Privacy Policy. We don't sell personal data to third parties.
+
+Q: Can I request my data be deleted?
+A: Yes, via Account Settings or by contacting support. Note this also forfeits any active entries, votes, or pending claims tied to the account.

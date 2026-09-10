@@ -1,0 +1,19 @@
+Child Profiles & Entries FAQs
+
+Q: How do I enter my child into a contest?
+A: From your dashboard, choose an open contest and age/gender category, create (or select) your child's profile, upload a photo, and submit. Entries go live after a quick moderation check.
+
+Q: How many children can I enter?
+A: You can create multiple child profiles, but each child can only hold one active entry per contest category at a time.
+
+Q: What happens if my child ages out of a category mid-contest?
+A: Eligibility is locked at the time of entry, so your child stays in the category they entered under for that contest, even if a birthday falls during the contest window.
+
+Q: Can I edit my child's profile after entering?
+A: Yes — you can update the gallery, reorder photos, and change the primary photo from your dashboard. Changing the primary photo only triggers re-moderation if that photo hasn't already been approved.
+
+Q: My child's entry was rejected — why, and can I fix it?
+A: Entries are rejected if a photo doesn't meet our moderation guidelines (e.g., inappropriate content, watermarks, or low quality). You'll get a reason by notification and can resubmit with a corrected photo.
+
+Q: Can the same child enter again in a future contest?
+A: Yes, unless they're serving a winner cooldown period (see Contests) after a recent 1st-place win in that category.

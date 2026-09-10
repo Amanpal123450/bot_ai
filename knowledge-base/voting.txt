@@ -1,0 +1,38 @@
+Voting & Vote Packages FAQs
+
+Voting works as follows:
+- Anyone can vote for a baby's photo by visiting the contest page and clicking "Vote".
+- Voters may need to verify via OTP to prevent fake votes.
+- Each person can vote once per baby per day, unless stated otherwise for a specific contest.
+- The baby with the highest number of valid votes at the end of the contest period wins.
+- Votes are counted automatically and rankings update in real time on the contest page.
+
+Q: How do I vote?
+A: Open a child's vote profile page and tap Vote. If you're not logged in, you'll be prompted to sign in first — voting requires an account.
+
+Q: How many times can I vote?
+A: You get a set number of free votes per day (default 20), refreshed daily, with a cooldown timer between votes (default 10 minutes) before your next free vote unlocks. A live countdown shows when your next vote is ready.
+
+Q: Is there a limit per participant, or per household connection?
+A: Yes. There's a daily cap per voter and a separate daily cap on free votes from the same internet connection (default 50/day), so the two limits work independently.
+
+Q: Can I buy extra votes?
+A: Yes. Vote packages can be purchased securely via Razorpay or Cashfree. Every purchase also credits a bonus vote allocation on top of what you bought.
+
+Q: Why can't I use my bonus votes right away?
+A: Bonus votes are held for 24 hours after purchase confirmation before they can be cast. This is shown as a countdown in your vote wallet, along with the bonus balance and its expiry date.
+
+Q: Do bonus or purchased votes expire?
+A: Bonus votes carry an admin-set expiry date, shown at the time of purchase. If they're not used by then, they're forfeited automatically with no refund. Purchased (non-bonus) vote credits do not expire.
+
+Q: My payment went through but votes didn't show up — what do I do?
+A: Votes are only credited after our payment gateway confirms the transaction, which can take a few minutes. If votes still haven't appeared after that, contact support with your payment reference ID — we never rely on your device alone to confirm a purchase.
+
+Q: Can I get a refund on purchased votes?
+A: Purchased votes are generally non-refundable once credited, in line with our Terms & Conditions. If a payment was fraudulent, duplicated, or failed to deliver votes due to a technical error, contact support for a case-by-case review.
+
+Q: Is it possible to win without buying any votes?
+A: Yes — free entry and free daily voting are core to Kikoo. Purchased votes are an optional boost, not a requirement to place or win.
+
+Q: Can I gift votes to someone else's child?
+A: Gift voting is planned for Kikoo but not yet available. When it launches, gifted votes will go to a locked recipient chosen at purchase time.

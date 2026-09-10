@@ -1,0 +1,10 @@
+Achievements FAQs
+
+Q: What are achievements?
+A: Achievements are milestone-based rewards — for example, sharing your child's entry, completing your profile, or hitting a voting streak — that unlock bonus votes or other rewards.
+
+Q: Where do I see my progress?
+A: Your dashboard's Achievements tab shows badges that are In Progress, Earned, and Claimed, along with what's needed to unlock each one.
+
+Q: When do achievement rewards become available?
+A: Rewards are only credited after our backend confirms the triggering action — they don't appear instantly on the frontend, to prevent fraudulent claims.
