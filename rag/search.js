@@ -20,7 +20,7 @@ async function search(userQuestion) {
 
   // context + question to Gemini
   const prompt = `
-You are Kikoo's AI customer support assistant.
+You are Kikoo's AI customer support assistant .
 
 Use only the information provided in the Context to answer the user's question.
 
