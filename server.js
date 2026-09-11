@@ -30,8 +30,11 @@ app.post("/api/speak", async (req, res) => {
     const audioBase64 = await textToSpeech(text);
     res.json({ audio: audioBase64 });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Voice generation failed." });
+   
+    res.status(500).json({
+      error: "Voice generation failed.",
+      details: err.message,
+    });
   }
 });
 

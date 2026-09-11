@@ -1,6 +1,11 @@
 const AI_CONFIG = require("../config/ai-config");
 
-function pcmToWav(base64Pcm, sampleRate = 24000, channels = 1, bitDepth = 16) {
+function pcmToWav(
+  base64Pcm,
+  sampleRate = 24000,
+  channels = 1,
+  bitDepth = 16
+) {
   const pcmBuffer = Buffer.from(base64Pcm, "base64");
   const byteRate = (sampleRate * channels * bitDepth) / 8;
   const blockAlign = (channels * bitDepth) / 8;
@@ -11,7 +16,7 @@ function pcmToWav(base64Pcm, sampleRate = 24000, channels = 1, bitDepth = 16) {
   header.write("WAVE", 8);
   header.write("fmt ", 12);
   header.writeUInt32LE(16, 16);
-  header.writeUInt16LE(1, 20); 
+  header.writeUInt16LE(1, 20);
   header.writeUInt16LE(channels, 22);
   header.writeUInt32LE(sampleRate, 24);
   header.writeUInt32LE(byteRate, 28);
@@ -24,35 +29,74 @@ function pcmToWav(base64Pcm, sampleRate = 24000, channels = 1, bitDepth = 16) {
 }
 
 async function textToSpeech(text) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${AI_CONFIG.ttsModel}:generateContent?key=${AI_CONFIG.apiKey}`;
+  if (!AI_CONFIG.apiKey) {
+    throw new Error("Gemini API key is missing");
+  }
+
+  if (!AI_CONFIG.ttsModel) {
+    throw new Error("TTS model is missing");
+  }
+
+  if (!AI_CONFIG.ttsVoice) {
+    throw new Error("TTS voice is missing");
+  }
+
+  const url =
+    `https://generativelanguage.googleapis.com/v1beta/models/` +
+    `${AI_CONFIG.ttsModel}:generateContent?key=${AI_CONFIG.apiKey}`;
 
   const body = {
-    contents: [{ parts: [{ text }] }],
+    contents: [
+      {
+        parts: [{ text }],
+      },
+    ],
     generationConfig: {
       responseModalities: ["AUDIO"],
       speechConfig: {
         voiceConfig: {
-          prebuiltVoiceConfig: { voiceName: AI_CONFIG.ttsVoice },
+          prebuiltVoiceConfig: {
+            voiceName: AI_CONFIG.ttsVoice,
+          },
         },
       },
     },
   };
 
-  const res = await fetch(url, {
+  const response = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(body),
   });
 
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(`Gemini TTS request failed: ${errText}`);
+  const responseText = await response.text();
+
+  if (!response.ok) {
+    console.error("Gemini TTS error:", responseText);
+    throw new Error(`Gemini TTS request failed: ${responseText}`);
   }
 
-  const data = await res.json();
-  const base64Pcm = data.candidates[0].content.parts[0].inlineData.data;
+  let data;
+
+  try {
+    data = JSON.parse(responseText);
+  } catch (err) {
+    throw new Error("Gemini returned invalid JSON");
+  }
+
+  const base64Pcm =
+    data?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+
+  if (!base64Pcm) {
+    console.error("Unexpected Gemini TTS response:", JSON.stringify(data));
+    throw new Error("No audio data received from Gemini");
+  }
+
   const wavBuffer = pcmToWav(base64Pcm);
-  return wavBuffer.toString("base64"); 
+
+  return wavBuffer.toString("base64");
 }
 
 module.exports = { textToSpeech };
