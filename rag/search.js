@@ -7,7 +7,7 @@ async function search(userQuestion) {
   const matches = await retrieve(userQuestion);
   // const context = matches.map((m) => `From ${m.source}:\n${m.text}`).join("\n\n---\n\n");
 
-  // Step 2: ask the AI model, giving it only the retrieved context
+
   // const result = await chatModel.generateContent(
   //   `Context:\n${context}\n\nQuestion: ${userQuestion}`
   // );

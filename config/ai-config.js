@@ -5,6 +5,8 @@ const AI_CONFIG = {
   chatModel: "gemini-3.6-flash",
   embeddingModel: "gemini-embedding-001",
   topK: 3,
+  ttsModel: "gemini-2.5-flash-preview-tts",
+  ttsVoice: "Kore",
   apiKey: process.env.GEMINI_API_KEY,
   systemPrompt: `You are Kikoo's customer support assistant for the baby photo contest website.
   Answer only using the information provided to you as "context" below.

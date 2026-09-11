@@ -49,7 +49,6 @@ async function ingest() {
   }
 
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(vectorStore, null, 2));
-  console.log(`\n✅ Done. Saved ${vectorStore.length} chunks to ${OUTPUT_FILE}`);
 }
 
 ingest().catch((err) => {
