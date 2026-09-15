@@ -1,5 +1,8 @@
 const AI_CONFIG = require("../config/ai-config");
 
+// TTS cache
+const ttsCache = new Map();
+
 function pcmToWav(
   base64Pcm,
   sampleRate = 24000,
@@ -7,10 +10,12 @@ function pcmToWav(
   bitDepth = 16
 ) {
   const pcmBuffer = Buffer.from(base64Pcm, "base64");
+
   const byteRate = (sampleRate * channels * bitDepth) / 8;
   const blockAlign = (channels * bitDepth) / 8;
 
   const header = Buffer.alloc(44);
+
   header.write("RIFF", 0);
   header.writeUInt32LE(36 + pcmBuffer.length, 4);
   header.write("WAVE", 8);
@@ -41,6 +46,19 @@ async function textToSpeech(text) {
     throw new Error("TTS voice is missing");
   }
 
+  // Normalize text so small whitespace differences don't create
+  // unnecessary duplicate TTS requests.
+  const cacheKey = text.trim().replace(/\s+/g, " ");
+
+  // Check cache first
+  if (ttsCache.has(cacheKey)) {
+    console.log("TTS cache HIT");
+
+    return ttsCache.get(cacheKey);
+  }
+
+  console.log("TTS cache MISS - generating new audio");
+
   const url =
     `https://generativelanguage.googleapis.com/v1beta/models/` +
     `${AI_CONFIG.ttsModel}:generateContent?key=${AI_CONFIG.apiKey}`;
@@ -48,11 +66,13 @@ async function textToSpeech(text) {
   const body = {
     contents: [
       {
-        parts: [{ text }],
+        parts: [{ text: cacheKey }],
       },
     ],
+
     generationConfig: {
       responseModalities: ["AUDIO"],
+
       speechConfig: {
         voiceConfig: {
           prebuiltVoiceConfig: {
@@ -65,9 +85,11 @@ async function textToSpeech(text) {
 
   const response = await fetch(url, {
     method: "POST",
+
     headers: {
       "Content-Type": "application/json",
     },
+
     body: JSON.stringify(body),
   });
 
@@ -75,7 +97,10 @@ async function textToSpeech(text) {
 
   if (!response.ok) {
     console.error("Gemini TTS error:", responseText);
-    throw new Error(`Gemini TTS request failed: ${responseText}`);
+
+    throw new Error(
+      `Gemini TTS request failed: ${responseText}`
+    );
   }
 
   let data;
@@ -90,13 +115,26 @@ async function textToSpeech(text) {
     data?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
 
   if (!base64Pcm) {
-    console.error("Unexpected Gemini TTS response:", JSON.stringify(data));
+    console.error(
+      "Unexpected Gemini TTS response:",
+      JSON.stringify(data)
+    );
+
     throw new Error("No audio data received from Gemini");
   }
 
   const wavBuffer = pcmToWav(base64Pcm);
 
-  return wavBuffer.toString("base64");
+  const audioBase64 = wavBuffer.toString("base64");
+
+  // Save generated audio in cache
+  ttsCache.set(cacheKey, audioBase64);
+
+  console.log("TTS audio saved in cache");
+
+  return audioBase64;
 }
 
-module.exports = { textToSpeech };
+module.exports = {
+  textToSpeech,
+};

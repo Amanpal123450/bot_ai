@@ -2,9 +2,10 @@ require("dotenv").config();
 
 const AI_CONFIG = {
 
-  chatModel: "gemini-3.6-flash",
+  // chatModel: "gemini-3.6-flash",
+  chatModel: "gemini-3.5-flash-lite",
   embeddingModel: "gemini-embedding-001",
-  topK: 5,
+  topK: 3,
   ttsModel: "gemini-2.5-flash-preview-tts",
   ttsVoice: "Kore",
   apiKey: process.env.GEMINI_API_KEY,
