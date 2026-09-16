@@ -59,13 +59,13 @@ Isse ek file banegi: `rag/vector-store.json`
 npm start
 ```
 
-Yeh `http://localhost:3001` pe chalega aur `/api/chat` route ready hoga.
+Yeh `https://bot-ai-1-372t.onrender.com` pe chalega aur `/api/chat` route ready hoga.
 
 ## Step 6 — Frontend chalao
 
 `frontend/` folder ko apne React project mein use karo (Vite ya Create React App
 ke saath), ya isko kisi existing website mein component ke roop mein import karo.
-Chatbot component automatically `http://localhost:3001/api/chat` ko call karega.
+Chatbot component automatically `https://bot-ai-1-372t.onrender.com/api/chat` ko call karega.
 
 ## Naya FAQ content add karna ho to
 
