@@ -9,12 +9,12 @@ app.use(express.json());
 
 app.post("/api/chat", async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message, history = [], gameState = {} } = req.body;
     if (!message || typeof message !== "string") {
       return res.status(400).json({ error: "Message is required" });
     }
-    const answer = await search(message);
-    res.json({ answer });
+    const result = await search(message, history, gameState);
+    res.json(result); // { answer, gameState }
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Something went wrong. Please try again." });

@@ -1,12 +1,5 @@
 Voting & Vote Packages FAQs
 
-Voting works as follows:
-- Anyone can vote for a baby's photo by visiting the contest page and clicking "Vote".
-- Voters may need to verify via OTP to prevent fake votes.
-- Each person can vote once per baby per day, unless stated otherwise for a specific contest.
-- The baby with the highest number of valid votes at the end of the contest period wins.
-- Votes are counted automatically and rankings update in real time on the contest page.
-
 Q: How do I vote?
 A: Open a child's vote profile page and tap Vote. If you're not logged in, you'll be prompted to sign in first — voting requires an account.
 

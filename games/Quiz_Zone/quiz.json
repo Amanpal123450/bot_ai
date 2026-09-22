@@ -1,0 +1,229 @@
+{
+  "animals": [
+    {
+      "question": "Which animal has the tallest neck and eats leaves from tall trees?",
+      "answer": "Giraffe"
+    },
+    {
+      "question": "Guess who — I have black and white stripes all over me. Who am I?",
+      "answer": "Zebra"
+    },
+    {
+      "question": "Which animal lives in water and is the largest fish in the world?",
+      "answer": "Whale shark"
+    },
+    {
+      "question": "Ready for this one? Which animal can change its color to hide?",
+      "answer": "Chameleon"
+    },
+    {
+      "question": "Which bird is famous for its colorful feathers and pretty dance?",
+      "answer": "Peacock"
+    },
+    {
+      "question": "I have a hard shell and I move super slowly. Who am I?",
+      "answer": "Tortoise"
+    },
+    {
+      "question": "Which animal is known as man's best friend?",
+      "answer": "Dog"
+    },
+    {
+      "question": "Which animal has a trunk and big flappy ears?",
+      "answer": "Elephant"
+    },
+    {
+      "question": "Guess who — I run the fastest of all land animals. Who am I?",
+      "answer": "Cheetah"
+    },
+    {
+      "question": "Which is the largest animal on Earth?",
+      "answer": "Blue whale"
+    },
+    {
+      "question": "Which animal says 'moo' and gives us milk?",
+      "answer": "Cow"
+    },
+    {
+      "question": "Ready for this one? Which insect makes honey?",
+      "answer": "Bee"
+    },
+    {
+      "question": "Guess who — I hop around and have long ears. Who am I?",
+      "answer": "Rabbit"
+    },
+    {
+      "question": "Which animal loves eating bamboo all day long?",
+      "answer": "Panda"
+    },
+    {
+      "question": "Which animal is called the ship of the desert?",
+      "answer": "Camel"
+    }
+  ],
+
+  "space": [
+    {
+      "question": "Which is the biggest planet in our solar system?",
+      "answer": "Jupiter"
+    },
+    { "question": "Which planet do we call home?", "answer": "Earth" },
+    {
+      "question": "What do we see in the sky at night that twinkles?",
+      "answer": "Stars"
+    },
+    {
+      "question": "Ready for this one? What do we call a shooting star?",
+      "answer": "Meteor"
+    },
+    {
+      "question": "What do we call the vehicle that takes astronauts to space?",
+      "answer": "Rocket"
+    },
+    {
+      "question": "Guess who — I'm the smallest planet in our solar system. Who am I?",
+      "answer": "Mercury"
+    },
+    {
+      "question": "What do astronauts wear when they go into space?",
+      "answer": "Spacesuit"
+    },
+    {
+      "question": "What do we call the path a planet takes around the Sun?",
+      "answer": "Orbit"
+    },
+    {
+      "question": "Which planet is known as the Red Planet?",
+      "answer": "Mars"
+    },
+    {
+      "question": "How many planets are there in our solar system?",
+      "answer": "Eight"
+    },
+    {
+      "question": "What do we call a person who travels to space?",
+      "answer": "Astronaut"
+    },
+    {
+      "question": "Ready for this one? Which planet has beautiful rings around it?",
+      "answer": "Saturn"
+    },
+    {
+      "question": "Guess who — I light up the sky during the day. Who am I?",
+      "answer": "The Sun"
+    },
+    {
+      "question": "What do we call the big machine that carries astronauts to space?",
+      "answer": "Spaceship"
+    },
+    {
+      "question": "What lights up the night sky besides stars?",
+      "answer": "The Moon"
+    }
+  ],
+
+  "dinosaurs": [
+    {
+      "question": "What do we call a dinosaur that eats only plants?",
+      "answer": "Herbivore"
+    },
+    {
+      "question": "What do we call a dinosaur that eats meat?",
+      "answer": "Carnivore"
+    },
+    {
+      "question": "Guess who — I have a super long neck just like a giraffe. Who am I?",
+      "answer": "Brachiosaurus"
+    },
+    {
+      "question": "Which flying reptile lived at the same time as the dinosaurs?",
+      "answer": "Pterodactyl"
+    },
+    {
+      "question": "What hatches from a dinosaur egg?",
+      "answer": "Baby dinosaur"
+    },
+    {
+      "question": "Ready for this one? Which dinosaur had sharp spikes on its tail?",
+      "answer": "Stegosaurus"
+    },
+    {
+      "question": "Which dinosaur had three horns on its face?",
+      "answer": "Triceratops"
+    },
+    {
+      "question": "Which dinosaur is often shown as the biggest and scariest?",
+      "answer": "Tyrannosaurus rex"
+    },
+    {
+      "question": "What do we call scientists who study dinosaur bones?",
+      "answer": "Paleontologists"
+    },
+    {
+      "question": "Did dinosaurs live before or after people?",
+      "answer": "Before"
+    },
+    {
+      "question": "What do we call the remains of dinosaurs found in rocks?",
+      "answer": "Fossils"
+    },
+    {
+      "question": "Guess who — I have hard bony armor on my back. Who am I?",
+      "answer": "Ankylosaurus"
+    },
+    {
+      "question": "Were dinosaurs bigger or smaller than elephants?",
+      "answer": "Bigger"
+    },
+    { "question": "What do most dinosaur names end with?", "answer": "Saurus" },
+    { "question": "What do we call a baby dinosaur?", "answer": "Hatchling" }
+  ],
+
+  "countries_and_general_knowledge": [
+    {
+      "question": "Guess this one — how many days are there in a week?",
+      "answer": "Seven"
+    },
+    { "question": "What is the capital of France?", "answer": "Paris" },
+    {
+      "question": "How many colors are there in a rainbow?",
+      "answer": "Seven"
+    },
+    {
+      "question": "Which is the largest ocean on Earth?",
+      "answer": "Pacific Ocean"
+    },
+    {
+      "question": "What do plants need to grow big and strong?",
+      "answer": "Sunlight, water and air"
+    },
+    {
+      "question": "How many continents are there in the world?",
+      "answer": "Seven"
+    },
+    {
+      "question": "Ready for this one? What do we call baby dogs?",
+      "answer": "Puppies"
+    },
+    {
+      "question": "What is the tallest mountain in the world?",
+      "answer": "Mount Everest"
+    },
+    { "question": "How many legs does a spider have?", "answer": "Eight" },
+    { "question": "What do we call frozen water?", "answer": "Ice" },
+    { "question": "What is the capital of India?", "answer": "New Delhi" },
+    {
+      "question": "Guess this one — how many months are there in a year?",
+      "answer": "Twelve"
+    },
+    {
+      "question": "What color do we get when we mix blue and yellow?",
+      "answer": "Green"
+    },
+    { "question": "How many seasons are there in a year?", "answer": "Four" },
+    {
+      "question": "What do we call the place where we go to study?",
+      "answer": "School"
+    }
+  ]
+}
