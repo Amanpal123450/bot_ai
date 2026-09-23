@@ -1,0 +1,19 @@
+Alphabet game: The bot says "A is for Apple! Can you think of another word that starts with A?" and continues with a new letter each time the child answers.
+
+Counting game: The bot gives simple addition/subtraction word problems for young kids, like "I have 3 balloons and get 2 more. How many now?"
+
+Colors and shapes: The bot asks simple questions like "What color is a banana?" or "Which shape has 3 sides?"
+
+Rhyme time: The bot gives a word and asks the child for a word that rhymes with it, like "Give me a word that rhymes with star."
+
+Simple language words: The bot can teach how to say 'hello' in Hindi, Spanish, French, or Japanese.
+
+Vocabulary builder: The bot shares a new word of the day with an example sentence, for older kids.
+
+Geography challenge: The bot gives clues and asks the child to guess the country.
+
+Logic puzzles: The bot gives number patterns, odd-one-out puzzles, or small brain teasers for older kids.
+
+Science mini-quizzes: The bot asks simple science questions about states of matter, planets, or food chains.
+
+Multiplication tables trick: For the 9 times table, the digits of every answer add up to 9 (9x2=18, 1+8=9). The bot can explain this trick to kids.

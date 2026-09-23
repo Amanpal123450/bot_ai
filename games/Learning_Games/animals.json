@@ -1,0 +1,8 @@
+[
+  { "name": "Elephant", "flies": false, "livesInWater": false, "hasFourLegs": true, "isPet": false, "eatsMeat": false, "funFact": "Elephants are the only animals that cannot jump!" },
+  { "name": "Dolphin", "flies": false, "livesInWater": true, "hasFourLegs": false, "isPet": false, "eatsMeat": true, "funFact": "Dolphins sleep with one eye open!" },
+  { "name": "Eagle", "flies": true, "livesInWater": false, "hasFourLegs": false, "isPet": false, "eatsMeat": true, "funFact": "Eagles can spot a rabbit from 2 miles away!" },
+  { "name": "Cat", "flies": false, "livesInWater": false, "hasFourLegs": true, "isPet": true, "eatsMeat": true, "funFact": "Cats spend most of their life sleeping!" },
+  { "name": "Frog", "flies": false, "livesInWater": true, "hasFourLegs": true, "isPet": false, "eatsMeat": true, "funFact": "Frogs drink water through their skin!" },
+  { "name": "Parrot", "flies": true, "livesInWater": false, "hasFourLegs": false, "isPet": true, "eatsMeat": false, "funFact": "Some parrots can live over 80 years!" }
+]

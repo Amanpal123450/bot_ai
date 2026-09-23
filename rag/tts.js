@@ -109,3 +109,85 @@ async function textToSpeech(text) {
 module.exports = {
   textToSpeech,
 };
+
+
+
+
+
+
+
+// require("dotenv").config();
+
+// const ttsCache = new Map();
+
+// async function textToSpeech(text) {
+//   const apiKey = process.env.ELEVENLABS_API_KEY;
+
+//   if (!apiKey) {
+//     throw new Error("ELEVENLABS_API_KEY is missing");
+//   }
+
+//   const cacheKey = text.trim().replace(/\s+/g, " ");
+
+//   // Cache HIT
+//   const cachedAudio = ttsCache.get(cacheKey);
+
+//   if (cachedAudio) {
+//     console.log("ELEVENLABS TTS CACHE HIT");
+//     return cachedAudio;
+//   }
+
+//   console.log("ELEVENLABS TTS CACHE MISS");
+
+//   // TODO: yahan apni selected ElevenLabs voice ID lagani hai
+//   const voiceId = "FZkK3TvQ0pjyDmT8fzIW";
+
+//   const url =
+//     `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}` +
+//     `?output_format=mp3_44100_128`;
+
+//   const response = await fetch(url, {
+//     method: "POST",
+
+//     headers: {
+//       "Content-Type": "application/json",
+//       "xi-api-key": apiKey,
+//     },
+
+//     body: JSON.stringify({
+//       text: cacheKey,
+
+//       model_id: "eleven_multilingual_v2",
+
+//       voice_settings: {
+//         stability: 0.35,
+//         similarity_boost: 0.75,
+//         style: 0.65,
+//         use_speaker_boost: true,
+//       },
+//     }),
+//   });
+
+//   if (!response.ok) {
+//     const errorText = await response.text();
+
+//     throw new Error(
+//       `ElevenLabs TTS request failed: ${response.status} ${errorText}`
+//     );
+//   }
+
+//   // ElevenLabs returns audio bytes
+//   const audioBuffer = Buffer.from(await response.arrayBuffer());
+
+//   // Convert MP3 → Base64
+//   const audioBase64 = audioBuffer.toString("base64");
+
+//   // Save in cache
+//   ttsCache.set(cacheKey, audioBase64);
+
+//   return audioBase64;
+// }
+
+// module.exports = {
+//   textToSpeech,
+// };

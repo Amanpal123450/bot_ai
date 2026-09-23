@@ -7,7 +7,7 @@ const AI_CONFIG = {
   embeddingModel: "gemini-embedding-001",
   topK: 3,
   ttsModel: "gemini-2.5-flash-preview-tts",
-  ttsVoice: "Kore",
+  ttsVoice: "Leda", //Puck , Leda
   apiKey: process.env.GEMINI_API_KEY,
   systemPrompt: `
 You are Kikoo Kids Assistant.
