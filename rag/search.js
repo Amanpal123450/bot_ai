@@ -14,6 +14,11 @@ const guessAnimalGame = require("../games/Learning_Games/guessAnimalGame");
 const { classifyGuessAnimalMessage } = require("../games/Learning_Games/guessAnimalClassifier");
 const logicPuzzleGame = require("../games/Learning_Games/logicPuzzleGame");
 const creativeCorner = require("../games/Creative_Corner/creativeCornerGame");
+const countingGame = require("../games/base_Games/countingGame");
+const colorsShapesGame = require("../games/base_Games/colorsShapesGame");
+const alphabetGame = require("../games/base_Games/alphabetGame");
+const { generateImage } = require("../games/Creative_Corner/imageGenerator");
+const { classifyDrawingRequest } = require("../games/Creative_Corner/drawingClassifier");
 
 async function phraseReply(instruction) {
   const result = await chatModel.generateContent(instruction);
@@ -55,6 +60,11 @@ Respond ONLY with JSON: {"type": "repeat_or_translate" | "new_topic"}
   }
 }
 
+const VOCAB_TRIGGERS = ["vocabulary builder", "word of the day"];
+function isVocabRequest(text) {
+  return VOCAB_TRIGGERS.some((k) => text.toLowerCase().includes(k));
+}
+
 
 async function search(userQuestion, history = [], gameState = {}) {
   const conversationTurns = history.map((m) => ({
@@ -75,10 +85,14 @@ async function search(userQuestion, history = [], gameState = {}) {
       guessAnimalGame.isStartGuessAnimalRequest(userQuestion) ||
       logicPuzzleGame.isStartLogicPuzzleRequest(userQuestion) ||
       creativeCorner.isCreativeMenuRequest(userQuestion) ||
-      !!creativeCorner.detectSubtype(userQuestion);
+      !!creativeCorner.detectSubtype(userQuestion) ||
+       countingGame.isStartCountingRequest(userQuestion) ||        
+    colorsShapesGame.isStartColorsShapesRequest(userQuestion) ||
+    alphabetGame.isStartAlphabetRequest(userQuestion) ||         
+    isVocabRequest(userQuestion);  
 
     if (wantsToSwitch) {
-      gameState = {}; // reset — falls through to the matching "start X" block below
+      gameState = {}; 
     }
   }
 
@@ -343,6 +357,63 @@ Keep it short, warm, and use 1-2 emojis. Match their language/tone.
   return { answer, gameState }; // stays in creative_corner mode — open-ended, no "win" state
 }
 
+// COUNTING GAME
+if (gameState.mode === "counting_game") {
+  const correct = countingGame.checkAnswer(userQuestion, gameState.currentAnswer);
+  const next = countingGame.generateProblem();
+
+  const answer = await phraseReply(`
+The child answered a counting problem: "${gameState.currentQuestion}". Their
+answer: "${userQuestion}". ${correct ? "This was CORRECT." : `This was WRONG. Correct answer was ${gameState.currentAnswer}.`}
+Give short feedback matching their tone, then present the next problem:
+"${next.question}". Use 1-2 emojis.
+`);
+  return {
+    answer,
+    gameState: { mode: "counting_game", currentQuestion: next.question, currentAnswer: next.answer },
+  };
+}
+
+// COLORS & SHAPES
+if (gameState.mode === "colors_shapes") {
+  const currentItem = gameState.currentItem;
+  const correct = colorsShapesGame.checkAnswer(userQuestion, currentItem.answer);
+  const { index, item: nextItem } = colorsShapesGame.pickQuestion([
+    ...(gameState.askedIndexes || []),
+    gameState.currentIndex,
+  ]);
+
+  const answer = await phraseReply(`
+The child answered: "${currentItem.question}" with "${userQuestion}".
+${correct ? "This was CORRECT." : `This was WRONG. Correct answer: "${currentItem.answer}".`}
+Give short feedback matching their tone, then ask the next question:
+"${nextItem.question}". Use 1-2 emojis.
+`);
+  return {
+    answer,
+    gameState: {
+      mode: "colors_shapes",
+      currentIndex: index,
+      currentItem: nextItem,
+      askedIndexes: [...(gameState.askedIndexes || []), gameState.currentIndex],
+    },
+  };
+}
+
+// ALPHABET GAME
+if (gameState.mode === "alphabet_game") {
+  const valid = alphabetGame.startsWithLetter(userQuestion, gameState.currentLetter);
+  const next = alphabetGame.nextLetter(gameState.currentLetter);
+
+  const answer = await phraseReply(`
+The child is playing the Alphabet game. Current letter was "${gameState.currentLetter}".
+Their answer: "${userQuestion}". ${valid ? "Their word correctly starts with that letter — celebrate!" : "Their word does NOT start with that letter — gently correct them."}
+Then say: "${next} is for..." and ask them to think of a word starting with "${next}".
+Match their tone. Use 1-2 emojis.
+`);
+  return { answer, gameState: { mode: "alphabet_game", currentLetter: next } };
+}
+
  
   //logicPuzzleGame
 
@@ -469,17 +540,128 @@ Ask which one they'd like to try. Keep it short and fun.
   return { answer, gameState: { mode: null } };
 }
 
-const creativeSubtype = creativeCorner.detectSubtype(userQuestion);
-if (creativeSubtype) {
-  const { subtype, prompt } = creativeCorner.startActivity(creativeSubtype);
+if (countingGame.isStartCountingRequest(userQuestion)) {
+  const problem = countingGame.generateProblem();
   const answer = await phraseReply(`
-Present this creative activity prompt to the child, matching their language/tone: "${userQuestion}".
-Prompt: "${prompt}"
-Keep it short, exciting, and use 1-2 emojis.
+Start a counting game for young kids. Present this problem: "${problem.question}".
+Match their tone. Use 1-2 emojis.
 `);
-  return { answer, gameState: { mode: "creative_corner", subtype, prompt } };
+  return { answer, gameState: { mode: "counting_game", currentQuestion: problem.question, currentAnswer: problem.answer } };
 }
 
+if (colorsShapesGame.isStartColorsShapesRequest(userQuestion)) {
+  const { index, item } = colorsShapesGame.pickQuestion([]);
+  const answer = await phraseReply(`
+Start a colors and shapes game. Ask this question: "${item.question}".
+Match their tone. Use 1-2 emojis.
+`);
+  return { answer, gameState: { mode: "colors_shapes", currentIndex: index, currentItem: item, askedIndexes: [] } };
+}
+
+if (alphabetGame.isStartAlphabetRequest(userQuestion)) {
+  const answer = await phraseReply(`
+Start the Alphabet game. Say "A is for Apple!" and ask the child to think of
+another word starting with A. Match their tone. Use 1-2 emojis.
+`);
+  return { answer, gameState: { mode: "alphabet_game", currentLetter: "A" } };
+}
+
+if (isVocabRequest(userQuestion)) {
+  const answer = await phraseReply(`
+The child wants Vocabulary Builder — share ONE new word appropriate for kids,
+its simple meaning, and an example sentence using it. Match their tone: "${userQuestion}".
+Use 1-2 emojis.
+`);
+  return { answer, gameState: { mode: null } };
+}
+
+const creativeSubtype = creativeCorner.detectSubtype(userQuestion);
+
+if (creativeSubtype) {
+  let subtype = creativeSubtype;
+  let prompt;
+
+  if (creativeSubtype === "drawing") {
+  
+    const { type, subject } = await classifyDrawingRequest({ userQuestion });
+
+    prompt = type === "specific" && subject
+      ? subject // exactly what the child asked for, cleaned up by AI
+      : creativeCorner.startActivity("drawing").prompt; // fallback: random idea
+  } else {
+    ({ subtype, prompt } = creativeCorner.startActivity(creativeSubtype));
+  }
+
+  // DRAWING
+  if (subtype === "drawing") {
+    try {
+     const imageBuffer = await generateImage(
+  `A simple black and white children's coloring book page of ${prompt}.
+
+  Style requirements:
+  - black and white line art only
+  - clean, thick, bold black outlines
+  - white background
+  - large empty areas for children to color
+  - simple shapes
+  - cute child-friendly cartoon style
+  - printable coloring page
+  - no colors
+  - no shading
+  - no gradients
+  - no textures
+  - no filled areas
+  - no text
+  - no letters
+  - no words
+  - no scary elements`
+      );
+
+      const imageBase64 = imageBuffer.toString("base64");
+
+      const answer = await phraseReply(`
+        Tell the child that their drawing idea is ready.
+        Drawing activity: "${prompt}"
+        Keep it short, exciting and use 1-2 emojis.
+      `);
+
+      return {
+        answer,
+        image: `data:image/png;base64,${imageBase64}`,
+        gameState: { mode: "creative_corner", subtype, prompt },
+      };
+    } catch (error) {
+      console.error("Image generation error:", error);
+
+      const answer = await phraseReply(`
+        Give the child this drawing challenge:
+        "${prompt}"
+        Say it in a fun and encouraging way.
+        Use 1-2 emojis.
+      `);
+
+      return {
+        answer,
+        gameState: { mode: "creative_corner", subtype, prompt },
+      };
+    }
+  }
+
+  // Other creative activities
+  const answer = await phraseReply(`
+    Present this creative activity prompt to the child,
+    matching their language/tone: "${userQuestion}".
+
+    Prompt: "${prompt}"
+
+    Keep it short, exciting, and use 1-2 emojis.
+  `);
+
+  return {
+    answer,
+    gameState: { mode: "creative_corner", subtype, prompt },
+  };
+}
 
   // EVERYTHING ELSE — normal AI-powered answer (Kikoo facts, jokes, chit-chat)
 
