@@ -3,7 +3,7 @@ const data = require("./creativeCornerData");
 // Each subtype has its own start trigger — checked in this priority order
 // (most specific first) so e.g. "story" doesn't accidentally swallow "song".
 const SUBTYPE_TRIGGERS = [
-  { subtype: "drawing", keywords: ["draw", "drawing"] },
+  { subtype: "drawing", keywords: ["draw", "drawing" ,"drow" ,"image","images", "draw the image"] },
   { subtype: "story", keywords: ["story starter", "complete the story", "finish this story"] },
   { subtype: "song", keywords: ["make a song", "make up a song", "write a song"] },
   { subtype: "superhero", keywords: ["invent a superhero", "create a superhero", "design a superhero"] },
