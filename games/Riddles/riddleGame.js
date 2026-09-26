@@ -6,7 +6,7 @@ const riddles = JSON.parse(fs.readFileSync(RIDDLES_FILE, "utf-8"));
 
 // Only used to decide "should we START a riddle game" when none is active.
 // Low stakes, so a simple keyword check here is fine.
-const START_RIDDLE_TRIGGERS = ["riddle", "puzzle"];
+const START_RIDDLE_TRIGGERS = ["riddle", "riddle game",'riddle', "game riddle"];
 
 function isStartRiddleRequest(text) {
   const lower = text.toLowerCase();

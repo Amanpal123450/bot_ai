@@ -9,7 +9,7 @@ const CATEGORIES = Object.keys(quizData); // ["animals", "space", "dinosaurs", "
 
 // Entry trigger only — low stakes, simple keyword check is fine here
 // (same pattern as riddleGame's isStartRiddleRequest).
-const START_QUIZ_TRIGGERS = ["quiz", "test me", "trivia"];
+const START_QUIZ_TRIGGERS = ["quiz", "quiz game", "qui"];
 
 function isStartQuizRequest(text) {
   const lower = text.toLowerCase();

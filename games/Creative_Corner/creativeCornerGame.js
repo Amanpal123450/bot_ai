@@ -11,6 +11,8 @@ const SUBTYPE_TRIGGERS = [
   { subtype: "papercraft", keywords: ["paper craft", "papercraft", "origami"] },
 ];
 
+
+
 const MENU_TRIGGERS = ["creative corner", "creative activity", "creative activities", "let's create"];
 
 function isCreativeMenuRequest(text) {
