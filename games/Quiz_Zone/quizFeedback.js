@@ -1,4 +1,5 @@
 const { chatModel } = require("../../rag/ai");
+const { generateAnswer } = require("../../services/aiService");
 const { buildQuestionFacts } = require("./quizQuestion");
 
 async function phraseQuizFeedback({ userQuestion, isCorrect, correctAnswer, nextItem, answerMode, questionNumber, isLastQuestion, correctCount, conversationTurns }) {
@@ -27,10 +28,10 @@ ${facts}
 `;
   }
 
-  const result = await chatModel.generateContent({
+    return generateAnswer({
     contents: [...conversationTurns, { role: "user", parts: [{ text: instruction }] }],
   });
-  return result.response.text().trim();
+  // return result.response.text().trim();
 }
 
 module.exports = {

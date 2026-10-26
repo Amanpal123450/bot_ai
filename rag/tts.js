@@ -1,74 +1,65 @@
 require("dotenv").config();
+const { cleanForSpeech } = require("./speechText");
 
+const CACHE_MAX = 300;
 const ttsCache = new Map();
 
-async function textToSpeech(text) {
-  const apiKey = process.env.FISH_API_KEY;
+function cacheGet(key) {
+  if (!ttsCache.has(key)) return null;
+  const v = ttsCache.get(key);
+  ttsCache.delete(key);
+  ttsCache.set(key, v);
+  return v;
+}
+function cacheSet(key, value) {
+  ttsCache.set(key, value);
+  if (ttsCache.size > CACHE_MAX) ttsCache.delete(ttsCache.keys().next().value);
+}
 
-  if (!apiKey) {
-    throw new Error("FISH_API_KEY is missing");
-  }
-
-  const cacheKey = text.trim().replace(/\s+/g, " ");
-
-  // Cache HIT
-  const cachedAudio = ttsCache.get(cacheKey);
-
-  if (cachedAudio) {
-    console.log("FISH TTS CACHE HIT");
-    return cachedAudio;
-  }
-
-  console.log("FISH TTS CACHE MISS");
-
-  const response = await fetch(
-    "https://api.fish.audio/v1/tts",
-    {
-      method: "POST",
-
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        model: "s2.1-pro-free",
-      },
-
-      body: JSON.stringify({
-        text: cacheKey,
-
-        // YAHAN apni selected Fish voice ka reference_id lagana hai
+async function callFish(text, apiKey) {
+  return fetch("https://api.fish.audio/v1/tts", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+      model: "s2.1-pro-free",
+    },
+    body: JSON.stringify({
+      text,
       reference_id: "1600f0a2e2af4ef3af1b350367683ede",
+      format: "mp3",
+    }),
+    signal: AbortSignal.timeout(12000),
+  });
+}
 
-        format: "mp3",
-      }),
-    }
-  );
+async function textToSpeech(rawText) {
+  const apiKey = process.env.FISH_API_KEY;
+  if (!apiKey) throw new Error("FISH_API_KEY is missing");
 
+  const text = cleanForSpeech(rawText);
+  if (!text) throw new Error("Nothing to speak");
+
+  const cached = cacheGet(text);
+  if (cached) return cached;
+
+  let response = await callFish(text, apiKey);
+  if (response.status === 429 || response.status >= 500) {
+    await new Promise((r) => setTimeout(r, 300));
+    response = await callFish(text, apiKey);
+  }
   if (!response.ok) {
     const errorText = await response.text();
-
-    console.error("FISH STATUS:", response.status);
-    console.error("FISH RESPONSE:", errorText);
-
-    throw new Error(
-      `Fish TTS failed: ${response.status} ${errorText}`
-    );
+    console.error("FISH STATUS:", response.status, errorText);
+    throw new Error(`Fish TTS failed: ${response.status} ${errorText}`);
   }
 
-  const audioBuffer = Buffer.from(
-    await response.arrayBuffer()
-  );
-
-  const audioBase64 = audioBuffer.toString("base64");
-
-  // Cache
-  ttsCache.set(cacheKey, audioBase64);
-
+  const audioBase64 = Buffer.from(await response.arrayBuffer()).toString("base64");
+  cacheSet(text, audioBase64);
   return audioBase64;
 }
 
-module.exports = {
-  textToSpeech,
-};
+module.exports = { textToSpeech };
 
 // require("dotenv").config();
 

@@ -1,24 +1,25 @@
 // const { retrieve } =require("../retrieve");
 const { chatModel } =require("../ai");
 const { retrieve } = require("../rag/retrieve");
-const {classifyGeneralIntent,} = require("../search/generalIntent");
-const { phraseReply } =require("../services/aiService");
+// const {classifyGeneralIntent,} = require("../search/generalIntent");
+// const { phraseReply } =require("../services/aiService");
+const { classifyGeneralIntent, isRepeatOrTranslateRequest } = require("../search/generalIntent");
+const { phraseReply, generateAnswer } = require("../services/aiService");
 
 
-async function handleGeneral(
-  userQuestion,
-  history,
-  conversationTurns,
-  gameState
-) {
+async function handleGeneral(userQuestion, history, conversationTurns, gameState) {
+  const lastBotMessage = [...history].reverse().find((m) => m.sender !== "user")?.text;
 
-   const lastBotMessage = [...history].reverse().find((m) => m.sender !== "user")?.text;
+  // RAG search turant shuru (parallel)
+  const matchesPromise = retrieve(userQuestion);
+  matchesPromise.catch(() => {});
 
-  const generalIntent = await classifyGeneralIntent({
-    userQuestion,
-    lastBotMessage,
-    conversationTurns,
-  });
+  // Intent LLM call sirf tab jab message repeat/translate jaisa lage
+  const REPEAT_HINT = /\b(hindi|english|hinglish|repeat|again|translate|dobara|phir se|samajh|simple|meaning|explain)\b/i;
+  let generalIntent = { type: "new_topic" };
+  if (lastBotMessage && (isRepeatOrTranslateRequest(userQuestion) || REPEAT_HINT.test(userQuestion))) {
+    generalIntent = await classifyGeneralIntent({ userQuestion, lastBotMessage, conversationTurns });
+  }
 
   if (generalIntent.type === "repeat_or_translate" && lastBotMessage) {
     const answer = await phraseReply(`
@@ -34,7 +35,7 @@ already said. Keep it short and use 1-2 emojis.
     return { answer, gameState };
   }
 
-   const matches = await retrieve(userQuestion);
+  const matches = await matchesPromise;
   const context = matches.map((m) => `From ${m.source}:\n${m.text}`).join("\n\n---\n\n");
 
   const prompt = `
@@ -58,14 +59,12 @@ ${userQuestion}
 Answer:
 `;
 
-  const result = await chatModel.generateContent({
+  const answer = await generateAnswer({
     contents: [...conversationTurns, { role: "user", parts: [{ text: prompt }] }],
   });
 
-  return { answer: result.response.text(), gameState: { mode: null } };
-
-
- }
+  return { answer, gameState: { mode: null } };
+}
 
  async function answerOffTopicQuestion({ userQuestion, conversationTurns }) {
   let context = "";

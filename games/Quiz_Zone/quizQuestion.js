@@ -1,4 +1,5 @@
 const { chatModel } = require("../../rag/ai");
+const { generateAnswer } = require("../../services/aiService");
 
 function buildQuestionFacts(item, answerMode, questionNumber) {
     let facts = `Question ${questionNumber} of 5: "${item.question}"`;
@@ -37,17 +38,11 @@ Keep it short and fun, use 1-2 emojis.
 If options are given, list them clearly as (A), (B), (C).
 `;
 
-  const result = await chatModel.generateContent({
-    contents: [
-      ...conversationTurns,
-      {
-        role: "user",
-        parts: [{ text: instruction }],
-      },
-    ],
+    return generateAnswer({
+    contents: [...conversationTurns, { role: "user", parts: [{ text: instruction }] }],
   });
 
-  return result.response.text().trim();
+  // return result.response.text().trim();
 }
 
 
