@@ -28,6 +28,7 @@ async function callFish(text, apiKey) {
       text,
       reference_id: "1600f0a2e2af4ef3af1b350367683ede",
       format: "mp3",
+      latency: "balanced",
     }),
     signal: AbortSignal.timeout(12000),
   });

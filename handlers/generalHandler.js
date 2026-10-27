@@ -1,16 +1,11 @@
-// const { retrieve } =require("../retrieve");
-const { chatModel } =require("../ai");
 const { retrieve } = require("../rag/retrieve");
-// const {classifyGeneralIntent,} = require("../search/generalIntent");
-// const { phraseReply } =require("../services/aiService");
 const { classifyGeneralIntent, isRepeatOrTranslateRequest } = require("../search/generalIntent");
 const { phraseReply, generateAnswer } = require("../services/aiService");
-
 
 async function handleGeneral(userQuestion, history, conversationTurns, gameState) {
   const lastBotMessage = [...history].reverse().find((m) => m.sender !== "user")?.text;
 
-  // RAG search turant shuru (parallel)
+  // RAG search turant shuru (intent check ke saath parallel)
   const matchesPromise = retrieve(userQuestion);
   matchesPromise.catch(() => {});
 
@@ -66,7 +61,7 @@ Answer:
   return { answer, gameState: { mode: null } };
 }
 
- async function answerOffTopicQuestion({ userQuestion, conversationTurns }) {
+async function answerOffTopicQuestion({ userQuestion, conversationTurns }) {
   let context = "";
   try {
     const matches = await retrieve(userQuestion);
@@ -88,7 +83,7 @@ Keep it short, friendly, use 1-2 emojis.
 `);
 }
 
- module.exports = {
+module.exports = {
   handleGeneral,
-  answerOffTopicQuestion
+  answerOffTopicQuestion,
 };
