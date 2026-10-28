@@ -12,22 +12,23 @@ app.use(express.json({ limit: "1mb" }));
 const MAX_HISTORY = 8; // LLM ko poori history bhejna slow karta hai
 
 function readBody(req) {
-  const { message, history = [], gameState = {} } = req.body || {};
+  const { message, history = [], gameState = {}, isSuggestion = false } = req.body || {};
   return {
     message,
     history: Array.isArray(history) ? history.slice(-MAX_HISTORY) : [],
     gameState: gameState && typeof gameState === "object" ? gameState : {},
+    isSuggestion: isSuggestion === true,
   };
 }
 
 // Purana endpoint (sirf text)
 app.post("/api/chat", async (req, res) => {
   try {
-    const { message, history, gameState } = readBody(req);
+    const { message, history, gameState, isSuggestion } = readBody(req);
     if (!message || typeof message !== "string") {
       return res.status(400).json({ error: "Message is required" });
     }
-    const result = await search(message, history, gameState);
+    const result = await search(message, history, gameState, { isSuggestion });
     res.json(result);
   } catch (err) {
     console.error("Chat API Error:", err);
@@ -37,7 +38,7 @@ app.post("/api/chat", async (req, res) => {
 
 
 app.post("/api/chat-voice", async (req, res) => {
-  const { message, history, gameState } = readBody(req);
+  const { message, history, gameState, isSuggestion } = readBody(req);
   if (!message || typeof message !== "string") {
     return res.status(400).json({ error: "Message is required" });
   }
@@ -53,7 +54,7 @@ app.post("/api/chat-voice", async (req, res) => {
 
   try {
     const t0 = Date.now();
-    const result = await search(message, history, gameState);
+    const result = await search(message, history, gameState, { isSuggestion });
     const llmMs = Date.now() - t0;
     if (closed) return;
 

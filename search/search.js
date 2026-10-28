@@ -4,8 +4,10 @@ const { handleRiddle, } = require("../handlers/riddleHandler");
 const { handleLearningGame, } = require("../handlers/learningGamesHandler");
 const { handleCreative, } = require("../handlers/creativeHandler");
 const { handleGeneral, } = require("../handlers/generalHandler");
+const { resolveLanguage } = require("../services/language");
+const { runWithLang } = require("../services/langContext");
 
-async function search(
+async function route(
     userQuestion,
     history = [],
     gameState = {}
@@ -56,6 +58,14 @@ async function search(
 
     return handleGeneral(userQuestion, history, conversationTurns, gameState);
 
+}
+
+async function search(userQuestion, history = [], gameState = {}) {
+    // language gameState.lang mein rehti hai; handlers ko wo dikhai nahi deti
+    const { lang: prevLang, ...state } = gameState || {};
+    const lang = resolveLanguage(userQuestion, prevLang);
+    const result = await runWithLang(lang, () => route(userQuestion, history, state));
+    return { ...result, gameState: { ...(result?.gameState || {}), lang } };
 }
 
 module.exports = {
