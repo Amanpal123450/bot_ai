@@ -1,7 +1,7 @@
 const { chatModel } = require("../ai");
 const { getStream } = require("./streamContext");
 
-const FAST = { thinkingConfig: { thinkingLevel: "minimal" } };
+const FAST = { thinkingConfig: { thinkingLevel: "minimal" }, maxOutputTokens: 200 };
 
 async function generateAnswer(input) {
   const request =
