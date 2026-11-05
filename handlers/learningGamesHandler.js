@@ -7,10 +7,22 @@ const logicPuzzleGame = require("../games/Learning_Games/logicPuzzleGame");
 const countingGame = require("../games/base_Games/countingGame");
 const colorsShapesGame = require("../games/base_Games/colorsShapesGame");
 const alphabetGame = require("../games/base_Games/alphabetGame");
+const geographyGame = require("../games/Learning_Games/geographyGame");
+const animalSoundsGame = require("../games/Learning_Games/animalSoundsGame");
 const { isVocabRequest } = require("../search/vocab");
 const { phraseReply } = require("../services/aiService");
 const { classifyIsAnswerAttempt } = require("../search/gameAnswerIntent");
 const { answerOffTopicQuestion } = require("./generalHandler");
+const { buildOptions, selectedOption, wordOptions } = require("../games/Learning_Games/multipleChoice");
+
+const COLOR_SHAPE_CHOICES = ["yellow", "blue", "green", "triangle", "square", "circle", "red"];
+const ANIMAL_CHOICES = ["elephant", "giraffe", "butterfly", "penguin", "dinosaur", "octopus", "lion", "tiger"];
+const spellingOptions = (word) => buildOptions(word, [
+  `${word}${word.slice(-1)}`,
+  word.length > 2 ? `${word.slice(0, -1)}${word.slice(-1)}e` : `${word}e`,
+  word.split("").reverse().join(""),
+]);
+const questionOptions = (question) => buildOptions(question.answer, question.choices);
 
 
 async function handleLearningGame(
@@ -22,7 +34,8 @@ async function handleLearningGame(
   if (gameState.mode === "word_chain") {
 
     const currentQ = `A word starting with the letter "${gameState.requiredLetter}"`;
-    const isAnswer = await classifyIsAnswerAttempt({ userQuestion, currentQuestion: currentQ, conversationTurns });
+    const selected = selectedOption(userQuestion, gameState.options);
+    const isAnswer = selected || await classifyIsAnswerAttempt({ userQuestion, currentQuestion: currentQ, conversationTurns });
 
     if (!isAnswer) {
       const answer = await answerOffTopicQuestion({ userQuestion, conversationTurns });
@@ -30,7 +43,7 @@ async function handleLearningGame(
     }
 
     const { requiredLetter, usedWords } = gameState;
-    const result = wordChainGame.checkWordChainMove(userQuestion, requiredLetter, usedWords);
+    const result = wordChainGame.checkWordChainMove(selected?.text || userQuestion, requiredLetter, usedWords);
 
     if (!result.valid) {
       const answer = await phraseReply(`
@@ -42,6 +55,7 @@ Encourage them warmly and remind them of the required letter. Use 1-2 emojis.
     }
 
     const newLetter = wordChainGame.lastLetter(result.word);
+    const options = wordOptions(newLetter, [...usedWords, result.word]);
     const answer = await phraseReply(`
 The child correctly said "${result.word}" in the word chain game, matching
 their language/tone: "${userQuestion}". Celebrate briefly, then ask for a new
@@ -53,14 +67,17 @@ word starting with the letter "${newLetter.toUpperCase()}". Use 1-2 emojis.
         mode: "word_chain",
         requiredLetter: newLetter,
         usedWords: [...usedWords, result.word],
+        options,
       },
+      options,
     };
   }
   // MATH GAME
   if (gameState.mode === "math_game") {
 
 
-    const isAnswer = await classifyIsAnswerAttempt({
+    const selected = selectedOption(userQuestion, gameState.options);
+    const isAnswer = selected || await classifyIsAnswerAttempt({
       userQuestion, currentQuestion: gameState.currentQuestion, conversationTurns,
     });
 
@@ -69,8 +86,9 @@ word starting with the letter "${newLetter.toUpperCase()}". Use 1-2 emojis.
       return { answer, gameState: { mode: null } };
     }
 
-    const correct = mathGame.checkMathAnswer(userQuestion, gameState.currentAnswer);
+    const correct = mathGame.checkMathAnswer(selected?.text || userQuestion, gameState.currentAnswer);
     const next = mathGame.generateProblem();
+    const options = buildOptions(next.answer, [next.answer + 1, next.answer - 1, next.answer + 2]);
 
     const answer = await phraseReply(`
 The child answered a math problem: "${gameState.currentQuestion}". Their
@@ -80,14 +98,16 @@ Give short feedback matching their tone, then present the next problem:
 `);
     return {
       answer,
-      gameState: { mode: "math_game", currentQuestion: next.question, currentAnswer: next.answer },
+      gameState: { mode: "math_game", currentQuestion: next.question, currentAnswer: next.answer, options },
+      options,
     };
   }
   // SPELLING CHALLENGE
   if (gameState.mode === "spelling") {
 
     const currentQ = `Spell the word "${gameState.currentWord}"`;
-    const isAnswer = await classifyIsAnswerAttempt({ userQuestion, currentQuestion: currentQ, conversationTurns });
+    const selected = selectedOption(userQuestion, gameState.options);
+    const isAnswer = selected || await classifyIsAnswerAttempt({ userQuestion, currentQuestion: currentQ, conversationTurns });
 
     if (!isAnswer) {
       const answer = await answerOffTopicQuestion({ userQuestion, conversationTurns });
@@ -95,8 +115,9 @@ Give short feedback matching their tone, then present the next problem:
     }
 
 
-    const correct = spellingGame.checkSpelling(userQuestion, gameState.currentWord);
+    const correct = spellingGame.checkSpelling(selected?.text || userQuestion, gameState.currentWord);
     const nextWord = spellingGame.pickWord([...(gameState.usedWords || []), gameState.currentWord]);
+    const options = spellingOptions(nextWord);
 
     const answer = await phraseReply(`
 The child tried to spell "${gameState.currentWord}". Their attempt: "${userQuestion}".
@@ -110,12 +131,33 @@ Use 1-2 emojis.
         mode: "spelling",
         currentWord: nextWord,
         usedWords: [...(gameState.usedWords || []), gameState.currentWord],
+        options,
       },
+      options,
     };
   }
   // GUESS THE ANIMAL
   if (gameState.mode === "guess_animal") {
 
+    // The button version is a simple four-animal guess. It deliberately skips
+    // free-form yes/no questions so a child never has to open the keyboard.
+    const selected = selectedOption(userQuestion, gameState.options);
+    if (selected) {
+      const { secretAnimal } = gameState;
+      const correct = guessAnimalGame.checkGuess(selected.text, secretAnimal.name);
+      const nextAnimal = guessAnimalGame.pickSecretAnimal();
+      const options = buildOptions(nextAnimal.name, ANIMAL_CHOICES);
+      const answer = await phraseReply(correct
+        ? `The child correctly guessed the animal is "${secretAnimal.name}"! Celebrate, share this fun fact: "${secretAnimal.funFact}", then say you are thinking of another animal and ask them to choose again. Use 1-2 emojis.`
+        : `The child guessed "${selected.text}", but the secret animal was "${secretAnimal.name}". Be kind, share this fun fact: "${secretAnimal.funFact}", then say you are thinking of another animal and ask them to choose again. Use 1-2 emojis.`);
+      return {
+        answer,
+        gameState: { mode: "guess_animal", secretAnimal: nextAnimal, triesLeft: guessAnimalGame.MAX_TRIES, options },
+        options,
+      };
+    }
+
+    const { secretAnimal, triesLeft } = gameState;
     const currentQ = `Guess the Animal game. The child can ask a yes/no question or guess the secret animal. The secret animal is "${secretAnimal.name}". Do not reveal it.`;
 
     const isAnswer = await classifyIsAnswerAttempt({
@@ -134,8 +176,6 @@ Use 1-2 emojis.
         gameState: { mode: null }
       };
     }
-    const { secretAnimal, triesLeft } = gameState;
-
     const classification = await classifyGuessAnimalMessage({ userQuestion, conversationTurns });
 
     if (classification.type === "give_up") {
@@ -194,7 +234,8 @@ Keep it short and fun, match their tone. Use 1-2 emojis.
   // COUNTING GAME
   if (gameState.mode === "counting_game") {
 
-    const isAnswer = await classifyIsAnswerAttempt({
+    const selected = selectedOption(userQuestion, gameState.options);
+    const isAnswer = selected || await classifyIsAnswerAttempt({
       userQuestion, currentQuestion: gameState.currentQuestion, conversationTurns,
     });
 
@@ -205,8 +246,9 @@ Keep it short and fun, match their tone. Use 1-2 emojis.
       return { answer, gameState: { mode: null } };
     }
 
-    const correct = countingGame.checkAnswer(userQuestion, gameState.currentAnswer);
+    const correct = countingGame.checkAnswer(selected?.text || userQuestion, gameState.currentAnswer);
     const next = countingGame.generateProblem();
+    const options = buildOptions(next.answer, [next.answer + 1, next.answer - 1, next.answer + 2]);
 
     const answer = await phraseReply(`
 The child answered a counting problem: "${gameState.currentQuestion}". Their
@@ -216,13 +258,15 @@ Give short feedback matching their tone, then present the next problem:
 `);
     return {
       answer,
-      gameState: { mode: "counting_game", currentQuestion: next.question, currentAnswer: next.answer },
+      gameState: { mode: "counting_game", currentQuestion: next.question, currentAnswer: next.answer, options },
+      options,
     };
   }
   // COLORS & SHAPES
   if (gameState.mode === "colors_shapes") {
 
-    const isAnswer = await classifyIsAnswerAttempt({
+    const selected = selectedOption(userQuestion, gameState.options);
+    const isAnswer = selected || await classifyIsAnswerAttempt({
       userQuestion, currentQuestion: gameState.currentItem.question, conversationTurns,
     });
 
@@ -231,7 +275,7 @@ Give short feedback matching their tone, then present the next problem:
       return { answer, gameState: { mode: null } };
     }
     const currentItem = gameState.currentItem;
-    const correct = colorsShapesGame.checkAnswer(userQuestion, currentItem.answer);
+    const correct = colorsShapesGame.checkAnswer(selected?.text || userQuestion, currentItem.answer);
     const { index, item: nextItem } = colorsShapesGame.pickQuestion([
       ...(gameState.askedIndexes || []),
       gameState.currentIndex,
@@ -243,6 +287,7 @@ ${correct ? "This was CORRECT." : `This was WRONG. Correct answer: "${currentIte
 Give short feedback matching their tone, then ask the next question:
 "${nextItem.question}". Use 1-2 emojis.
 `);
+    const options = buildOptions(nextItem.answer, COLOR_SHAPE_CHOICES);
     return {
       answer,
       gameState: {
@@ -250,22 +295,26 @@ Give short feedback matching their tone, then ask the next question:
         currentIndex: index,
         currentItem: nextItem,
         askedIndexes: [...(gameState.askedIndexes || []), gameState.currentIndex],
+        options,
       },
+      options,
     };
   }
   // ALPHABET GAME
   if (gameState.mode === "alphabet_game") {
 
     const currentQ = `A word starting with the letter "${gameState.currentLetter}"`;
-    const isAnswer = await classifyIsAnswerAttempt({ userQuestion, currentQuestion: currentQ, conversationTurns });
+    const selected = selectedOption(userQuestion, gameState.options);
+    const isAnswer = selected || await classifyIsAnswerAttempt({ userQuestion, currentQuestion: currentQ, conversationTurns });
 
     if (!isAnswer) {
       const answer = await answerOffTopicQuestion({ userQuestion, conversationTurns });
       return { answer, gameState: { mode: null } };
     }
 
-    const valid = alphabetGame.startsWithLetter(userQuestion, gameState.currentLetter);
+    const valid = alphabetGame.startsWithLetter(selected?.text || userQuestion, gameState.currentLetter);
     const next = alphabetGame.nextLetter(gameState.currentLetter);
+    const options = wordOptions(next);
 
     const answer = await phraseReply(`
 The child is playing the Alphabet game. Current letter was "${gameState.currentLetter}".
@@ -273,7 +322,51 @@ Their answer: "${userQuestion}". ${valid ? "Their word correctly starts with tha
 Then say: "${next} is for..." and ask them to think of a word starting with "${next}".
 Match their tone. Use 1-2 emojis.
 `);
-    return { answer, gameState: { mode: "alphabet_game", currentLetter: next } };
+    return { answer, gameState: { mode: "alphabet_game", currentLetter: next, options }, options };
+  }
+
+  // GEOGRAPHY CHALLENGE
+  if (gameState.mode === "geography_game") {
+    const current = gameState.currentQuestion;
+    const selected = selectedOption(userQuestion, gameState.options);
+    if (!selected) {
+      const answer = await answerOffTopicQuestion({ userQuestion, conversationTurns });
+      return { answer, gameState };
+    }
+    const correct = selected.text.toLowerCase() === current.answer.toLowerCase();
+    const { index, question: next } = geographyGame.pickQuestion([
+      ...(gameState.askedIndexes || []), gameState.currentIndex,
+    ]);
+    const options = questionOptions(next);
+    const answer = await phraseReply(`
+The child chose "${selected.text}" for this geography question: "${current.question}".
+They were ${correct ? "CORRECT" : `WRONG; the correct answer was ${current.answer}`}. Give brief, warm feedback.
+Then ask this next geography question: "${next.question}".
+Do not read or list answer choices; the child will see them after you finish speaking. Use 1-2 emojis.
+`);
+    return { answer, gameState: { mode: "geography_game", currentIndex: index, currentQuestion: next, askedIndexes: [...(gameState.askedIndexes || []), gameState.currentIndex], options }, options };
+  }
+
+  // ANIMAL SOUNDS
+  if (gameState.mode === "animal_sounds") {
+    const current = gameState.currentQuestion;
+    const selected = selectedOption(userQuestion, gameState.options);
+    if (!selected) {
+      const answer = await answerOffTopicQuestion({ userQuestion, conversationTurns });
+      return { answer, gameState };
+    }
+    const correct = selected.text.toLowerCase() === current.answer.toLowerCase();
+    const { index, question: next } = animalSoundsGame.pickQuestion([
+      ...(gameState.askedIndexes || []), gameState.currentIndex,
+    ]);
+    const options = questionOptions(next);
+    const answer = await phraseReply(`
+The child chose "${selected.text}" for this animal-sound question: "${current.question}".
+They were ${correct ? "CORRECT" : `WRONG; the correct answer was ${current.answer}`}. Give brief, warm feedback.
+Then ask this next animal-sound question: "${next.question}".
+Do not read or list answer choices; the child will see them after you finish speaking. Use 1-2 emojis.
+`);
+    return { answer, gameState: { mode: "animal_sounds", currentIndex: index, currentQuestion: next, askedIndexes: [...(gameState.askedIndexes || []), gameState.currentIndex], options }, options };
   }
 
 // LOGIC PUZZLE
@@ -288,11 +381,8 @@ if (gameState.mode === "logic_puzzle") {
         logicPuzzleGame.puzzles[currentPuzzleIndex];
 
 
-    // ------------------------------------------
-    // CHECK: ANSWER OR OFF-TOPIC?
-    // ------------------------------------------
-
-    const isAnswer = await classifyIsAnswerAttempt({
+    const selected = selectedOption(userQuestion, gameState.options);
+    const isAnswer = selected || await classifyIsAnswerAttempt({
         userQuestion,
 
         currentQuestion: `
@@ -323,12 +413,17 @@ and give an answer or guess.
             .toLowerCase();
 
     const userAnswer =
-        String(userQuestion)
+        String(selected?.text || userQuestion)
             .trim()
             .toLowerCase();
 
     const isCorrect =
         userAnswer === correctAnswer;
+    const { index, puzzle: nextPuzzle } = logicPuzzleGame.pickPuzzle([
+      ...(gameState.askedIndexes || []),
+      currentPuzzleIndex,
+    ]);
+    const options = buildOptions(nextPuzzle.answer, logicPuzzleGame.puzzles.map((puzzle) => puzzle.answer));
     const answer = await phraseReply(`
 The child is playing a Logic Puzzle.
 
@@ -352,14 +447,19 @@ Keep it short, fun and child-friendly.
 Use 1-2 emojis.
 
 If the answer was wrong, explain the correct answer briefly.
+Then immediately ask this next puzzle: "${nextPuzzle.question}".
+Do not say "Next puzzle" in English when the reply language is not English.
 `);
-
 
     return {
         answer,
         gameState: {
-            mode: null
-        }
+            mode: "logic_puzzle",
+            currentPuzzleIndex: index,
+            askedIndexes: [...(gameState.askedIndexes || []), currentPuzzleIndex],
+            options,
+        },
+        options,
     };
 }
 
@@ -372,39 +472,44 @@ If the answer was wrong, explain the correct answer briefly.
 Start a word chain game. Say the word "APPLE" and ask the child to say a
 word starting with "${nextLetter.toUpperCase()}". Match their tone. Use 1-2 emojis.
 `);
-    return { answer, gameState: { mode: "word_chain", requiredLetter: nextLetter, usedWords: ["apple"] } };
+    const options = wordOptions(nextLetter, ["apple"]);
+    return { answer, gameState: { mode: "word_chain", requiredLetter: nextLetter, usedWords: ["apple"], options }, options };
   }
 
   if (mathGame.isStartMathRequest(userQuestion)) {
     const problem = mathGame.generateProblem();
+    const options = buildOptions(problem.answer, [problem.answer + 1, problem.answer - 1, problem.answer + 2]);
     const answer = await phraseReply(`
 Start a "Beat the Robot" math game. Present this problem: "${problem.question}".
 Match their tone. Use 1-2 emojis.
 `);
-    return { answer, gameState: { mode: "math_game", currentQuestion: problem.question, currentAnswer: problem.answer } };
+    return { answer, gameState: { mode: "math_game", currentQuestion: problem.question, currentAnswer: problem.answer, options }, options };
   }
 
   if (spellingGame.isStartSpellingRequest(userQuestion)) {
     const word = spellingGame.pickWord([]);
+    const options = spellingOptions(word);
     const answer = await phraseReply(`
 Start a spelling challenge. Ask the child to spell: "${word}".
 Match their tone. Use 1-2 emojis.
 `);
-    return { answer, gameState: { mode: "spelling", currentWord: word, usedWords: [] } };
+    return { answer, gameState: { mode: "spelling", currentWord: word, usedWords: [], options }, options };
   }
 
   if (guessAnimalGame.isStartGuessAnimalRequest(userQuestion)) {
     const animal = guessAnimalGame.pickSecretAnimal();
+    const options = buildOptions(animal.name, ANIMAL_CHOICES);
     const answer = await phraseReply(`
-Start "Guess the Animal" (20 Questions). Tell the child you're thinking of an
-animal and they can ask yes/no questions to guess it. Do NOT reveal the animal.
+Start "Guess the Animal". Tell the child you're thinking of an animal and ask
+them to choose their guess. Do NOT reveal the animal.
 Match their tone. Use 1-2 emojis.
 `);
-    return { answer, gameState: { mode: "guess_animal", secretAnimal: animal, triesLeft: guessAnimalGame.MAX_TRIES } };
+    return { answer, gameState: { mode: "guess_animal", secretAnimal: animal, triesLeft: guessAnimalGame.MAX_TRIES, options }, options };
   }
 
   if (logicPuzzleGame.isStartLogicPuzzleRequest(userQuestion)) {
     const { index, puzzle } = logicPuzzleGame.pickPuzzle(gameState.askedIndexes || []);
+    const options = buildOptions(puzzle.answer, logicPuzzleGame.puzzles.map((item) => item.answer));
     const answer = await phraseReply(`
 The child asked for a logic puzzle, matching the language/tone of their message: "${userQuestion}".
 Puzzle to present: "${puzzle.question}"
@@ -416,34 +521,61 @@ Do NOT reveal the answer. Invite them to guess. Keep it short, fun, and use 1-2 
         mode: "logic_puzzle",
         currentPuzzleIndex: index,
         askedIndexes: gameState.askedIndexes || [],
+        options,
       },
+      options,
     };
   }
 
   if (countingGame.isStartCountingRequest(userQuestion)) {
     const problem = countingGame.generateProblem();
+    const options = buildOptions(problem.answer, [problem.answer + 1, problem.answer - 1, problem.answer + 2]);
     const answer = await phraseReply(`
 Start a counting game for young kids. Present this problem: "${problem.question}".
 Match their tone. Use 1-2 emojis.
 `);
-    return { answer, gameState: { mode: "counting_game", currentQuestion: problem.question, currentAnswer: problem.answer } };
+    return { answer, gameState: { mode: "counting_game", currentQuestion: problem.question, currentAnswer: problem.answer, options }, options };
   }
 
   if (colorsShapesGame.isStartColorsShapesRequest(userQuestion)) {
     const { index, item } = colorsShapesGame.pickQuestion([]);
+    const options = buildOptions(item.answer, COLOR_SHAPE_CHOICES);
     const answer = await phraseReply(`
 Start a colors and shapes game. Ask this question: "${item.question}".
 Match their tone. Use 1-2 emojis.
 `);
-    return { answer, gameState: { mode: "colors_shapes", currentIndex: index, currentItem: item, askedIndexes: [] } };
+    return { answer, gameState: { mode: "colors_shapes", currentIndex: index, currentItem: item, askedIndexes: [], options }, options };
   }
 
   if (alphabetGame.isStartAlphabetRequest(userQuestion)) {
+    const options = wordOptions("A");
     const answer = await phraseReply(`
 Start the Alphabet game. Say "A is for Apple!" and ask the child to think of
 another word starting with A. Match their tone. Use 1-2 emojis.
 `);
-    return { answer, gameState: { mode: "alphabet_game", currentLetter: "A" } };
+    return { answer, gameState: { mode: "alphabet_game", currentLetter: "A", options }, options };
+  }
+
+  if (geographyGame.isStartGeographyRequest(userQuestion)) {
+    const { index, question } = geographyGame.pickQuestion([]);
+    const options = questionOptions(question);
+    const answer = await phraseReply(`
+Start a Geography Challenge. Ask this question: "${question.question}".
+Do not read or list answer choices; the child will see them after you finish speaking.
+Keep it short, fun, and use 1-2 emojis.
+`);
+    return { answer, gameState: { mode: "geography_game", currentIndex: index, currentQuestion: question, askedIndexes: [], options }, options };
+  }
+
+  if (animalSoundsGame.isStartAnimalSoundsRequest(userQuestion)) {
+    const { index, question } = animalSoundsGame.pickQuestion([]);
+    const options = questionOptions(question);
+    const answer = await phraseReply(`
+Start an Animal Sounds game. Ask this question: "${question.question}".
+Do not read or list answer choices; the child will see them after you finish speaking.
+Keep it short, fun, and use 1-2 emojis.
+`);
+    return { answer, gameState: { mode: "animal_sounds", currentIndex: index, currentQuestion: question, askedIndexes: [], options }, options };
   }
 
   // VOCABULARY

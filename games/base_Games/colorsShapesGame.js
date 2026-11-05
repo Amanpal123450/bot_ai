@@ -9,7 +9,7 @@ const questions = [
   { question: "What color do you get by mixing blue and yellow?", answer: "green" },
 ];
 
-const START_TRIGGERS = ["colors and shapes", "colours and shapes", "colors game", "shapes game", "color and shape"];
+const START_TRIGGERS = ["colors and shapes", "colors_shapes", "colours and shapes", "colors game", "shapes game", "color and shape"];
 
 function isStartColorsShapesRequest(text) {
   const lower = text.toLowerCase();

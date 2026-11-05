@@ -3,7 +3,7 @@ const path = require("path");
 
 const animals = JSON.parse(fs.readFileSync(path.join(__dirname, "animals.json"), "utf-8"));
 
-const START_TRIGGERS = ["guess the animal", "20 questions"];
+const START_TRIGGERS = ["guess the animal", "guess_animal", "20 questions"];
 const MAX_TRIES = 15;
 
 function isStartGuessAnimalRequest(text) {

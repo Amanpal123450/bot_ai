@@ -28,7 +28,7 @@ function buildRound(category) {
   return shuffled.slice(0, 5);
 }
 
-// Builds 3 MCQ options (A/B/C): correct answer + 2 distractors from the
+// Builds 4 MCQ options (A/B/C/D): correct answer + 3 distractors from the
 // same category, so wrong options are still plausible/related.
 function buildOptions(correctAnswer, category) {
   const sameCategory = quizData[category] || [];
@@ -36,11 +36,11 @@ function buildOptions(correctAnswer, category) {
     .map((q) => q.answer)
     .filter((a) => a.toLowerCase() !== correctAnswer.toLowerCase());
 
-  const distractors = [...otherAnswers].sort(() => Math.random() - 0.5).slice(0, 2);
-  while (distractors.length < 2) distractors.push("None of these");
+  const distractors = [...otherAnswers].sort(() => Math.random() - 0.5).slice(0, 3);
+  while (distractors.length < 3) distractors.push("None of these");
 
   const options = [correctAnswer, ...distractors].sort(() => Math.random() - 0.5);
-  const labels = ["A", "B", "C"];
+  const labels = ["A", "B", "C", "D"];
   return options.map((text, i) => ({ label: labels[i], text }));
 } 
 
@@ -48,7 +48,8 @@ function buildOptions(correctAnswer, category) {
 // so this never needs AI judgment, unlike open-ended riddle/quiz answers.
 function checkMCQAnswer(userText, options, correctAnswer) {
   const lower = userText.trim().toLowerCase();
-  const byLetter = options.find((o) => o.label.toLowerCase() === lower);
+  const letter = lower.match(/^([a-d])(?:[).\s]|$)/)?.[1];
+  const byLetter = options.find((o) => o.label.toLowerCase() === letter);
   if (byLetter) return byLetter.text.toLowerCase() === correctAnswer.toLowerCase();
 
   const normalize = (s) => s.toLowerCase().replace(/[^a-z0-9 ]/g, "").trim();

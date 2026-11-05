@@ -25,6 +25,7 @@ ${correctCount === 5
     instruction += `
 After the feedback above, present the NEXT question (do not reveal its answer):
 ${facts}
+Do not read or list answer choices; the child will see them after you finish speaking.
 `;
   }
 

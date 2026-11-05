@@ -9,6 +9,8 @@ const creativeCorner = require("../games/Creative_Corner/creativeCornerGame");
 const countingGame = require("../games/base_Games/countingGame");
 const colorsShapesGame = require("../games/base_Games/colorsShapesGame");
 const alphabetGame = require("../games/base_Games/alphabetGame");
+const geographyGame = require("../games/Learning_Games/geographyGame");
+const animalSoundsGame = require("../games/Learning_Games/animalSoundsGame");
 
 const { isVocabRequest } = require("./vocab");
 
@@ -30,6 +32,8 @@ function checkGameSwitch(userQuestion, gameState) {
     countingGame.isStartCountingRequest(userQuestion) ||
     colorsShapesGame.isStartColorsShapesRequest(userQuestion) ||
     alphabetGame.isStartAlphabetRequest(userQuestion) ||
+    geographyGame.isStartGeographyRequest(userQuestion) ||
+    animalSoundsGame.isStartAnimalSoundsRequest(userQuestion) ||
     isVocabRequest(userQuestion)||
     logicPuzzleGame.isStartLogicPuzzleRequest(userQuestion);
 

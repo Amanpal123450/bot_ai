@@ -1,4 +1,4 @@
-const START_TRIGGERS = ["alphabet game", "alphabet"];
+const START_TRIGGERS = ["alphabet game", "alphabet_game", "alphabet"];
 
 function isStartAlphabetRequest(text) {
   const lower = text.toLowerCase();

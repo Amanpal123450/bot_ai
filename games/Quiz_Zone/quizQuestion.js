@@ -3,9 +3,6 @@ const { generateAnswer } = require("../../services/aiService");
 
 function buildQuestionFacts(item, answerMode, questionNumber) {
     let facts = `Question ${questionNumber} of 5: "${item.question}"`;
-    if (answerMode === "mcq") {
-        facts += "\n Options: " + item.options.map((o) => `${o.label}) ${o.text}`).join(", ");
-    }
     return facts;
 }
 
@@ -35,7 +32,7 @@ ${facts}
 
 Keep it short and fun, use 1-2 emojis.
 
-If options are given, list them clearly as (A), (B), (C).
+Do not read or list answer choices; the child will see them after you finish speaking.
 `;
 
     return generateAnswer({

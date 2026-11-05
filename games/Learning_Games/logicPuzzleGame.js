@@ -5,7 +5,10 @@ const PUZZLES_FILE = path.join(__dirname, "logicPuzzles.json");
 const puzzles = JSON.parse(fs.readFileSync(PUZZLES_FILE, "utf-8"));
 
 const START_TRIGGERS = [
+  "logic puzzle",
   "start logic puzzle",
+  "logic_puzzle",
+  "logic puzzles",
   "start a logic puzzle",
   "start logic puzzles",
   "play logic puzzle",
@@ -14,7 +17,9 @@ const START_TRIGGERS = [
   "start brain teaser",
   "start a brain teaser",
   "play brain teaser",
+  "brain teaser",
   "start number pattern",
+  "number pattern",
 ];
 
 function isStartLogicPuzzleRequest(text) {

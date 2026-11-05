@@ -1,4 +1,4 @@
-const START_MATH_TRIGGERS = ["math game", "beat the robot", "number puzzle", "times table", "tables", "math", "math stert" ,"matha"];
+const START_MATH_TRIGGERS = ["math game", "math_game", "beat the robot", "number puzzle", "times table", "tables", "math", "math stert" ,"matha"];
 
 function isStartMathRequest(text) {
   const lower = text.toLowerCase();
