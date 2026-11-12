@@ -63,7 +63,7 @@ async function route(
 async function search(userQuestion, history = [], gameState = {}) {
     // language gameState.lang mein rehti hai; handlers ko wo dikhai nahi deti
     const { lang: prevLang, ...state } = gameState || {};
-    const lang = resolveLanguage(userQuestion, prevLang);
+    const lang = await resolveLanguage(userQuestion, prevLang);
     const result = await runWithLang(lang, () => route(userQuestion, history, state));
     return { ...result, gameState: { ...(result?.gameState || {}), lang } };
 }
