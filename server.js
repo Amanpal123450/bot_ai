@@ -10,7 +10,7 @@ const http = require("http");
 const express = require("express");
 const cors = require("cors");
 const { WebSocketServer } = require("ws");
-const { textToSpeech } = require("./rag/tts");
+// const { textToSpeech } = require("./rag/tts");
 const { openFishLive } = require("./rag/fishLive");
 const { cleanForSpeech } = require("./rag/speechText");
 const { runWithStream } = require("./services/streamContext");
@@ -47,17 +47,17 @@ app.post("/api/chat", async (req, res) => {
 });
 
 // Replay button ke liye (HTTP + cache, jaisa pehle tha)
-app.post("/api/speak", async (req, res) => {
-  try {
-    const { text, lang } = req.body;
-    if (!text || typeof text !== "string") {
-      return res.status(400).json({ error: "Text is required" });
-    }
-    res.json({ audio: await textToSpeech(text, lang) }); // lang optional
-  } catch (err) {
-    res.status(500).json({ error: "Voice generation failed.", details: err.message });
-  }
-});
+// app.post("/api/speak", async (req, res) => {
+//   try {
+//     const { text, lang } = req.body;
+//     if (!text || typeof text !== "string") {
+//       return res.status(400).json({ error: "Text is required" });
+//     }
+//     res.json({ audio: await textToSpeech(text, lang) }); // lang optional
+//   } catch (err) {
+//     res.status(500).json({ error: "Voice generation failed.", details: err.message });
+//   }
+// });
 
 const FIRST_MIN = 12;        // pehla chunk: pehla sentence (kam se kam itne akshar)
 const FIRST_CLAUSE = 40;     // pehla sentence lamba ho to comma par bhi tod do
@@ -194,7 +194,7 @@ async function runVoiceChat(job, { message, history, gameState }, socket) {
     return send({ type: "error", error: "Message is required" });
   }
 
-  // ---- timing: boss ko numbers dikhane ke liye ----
+  // timing
   const t0 = Date.now();
   const T = { firstToken: null, firstAudio: null };
   const onFirstAudio = () => { if (T.firstAudio === null) T.firstAudio = Date.now() - t0; };
